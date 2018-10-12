@@ -33,7 +33,7 @@ class Property
   String name;
   String value;
   String display;
-  bool editable = false;
+  bool editable = true;
 
   Property();
 

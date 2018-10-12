@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:oc_sheet_app/Models.dart';
+import 'package:oc_sheet_app/PropertyWidget.dart';
+import 'package:oc_sheet_app/ViewPortWidget.dart';
 import 'dart:convert';
 import 'dart:async';
 import 'package:http/http.dart' as http;
@@ -49,7 +51,8 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
   List<ViewPort> viewPorts = new List<ViewPort>();
-  String test = "false";
+  ViewPort current;
+  ViewPort next;
 
   _MyHomePageState(){
     reloadViewPort();//.then((response) => viewPorts = response);
@@ -67,6 +70,12 @@ class _MyHomePageState extends State<MyHomePage> {
     });
     setState(() {
       viewPorts = response;
+      if(viewPorts.length > 0){
+        current = viewPorts[0];
+      }
+      if(viewPorts.length > 1){
+        next = viewPorts[1];
+      }
     });
   }
 
@@ -77,8 +86,14 @@ class _MyHomePageState extends State<MyHomePage> {
       // so that the display can reflect the updated values. If we changed
       // _counter without calling setState(), then the build method would not be
       // called again, and so nothing would appear to happen.
-      if(viewPorts.length > (_counter+1))
+      if(viewPorts.length > (_counter+1)){
         _counter++;
+        current = viewPorts[_counter];
+        if(_counter < viewPorts.length-1){
+          next = viewPorts[_counter+1];
+        }
+      }
+
     });
   }
 
@@ -89,14 +104,30 @@ class _MyHomePageState extends State<MyHomePage> {
       // so that the display can reflect the updated values. If we changed
       // _counter without calling setState(), then the build method would not be
       // called again, and so nothing would appear to happen.
-      if(_counter > 0)
+      if(_counter > 0) {
         _counter--;
+        current = viewPorts[_counter];
+        if(_counter < viewPorts.length-1){
+          next = viewPorts[_counter+1];
+        }else{
+          next = viewPorts[0];
+        }
+      }
     });
   }
 
-  Widget getPage(List<ViewPort> viewPorts, int counter){
+  Widget getPage(BuildContext context){
     if(viewPorts.length > 0){
-      return getViewWidget(viewPorts[counter]);
+      return  new Container(width:600.00, height:800.0,child: new Navigator(
+        onGenerateRoute: (RouteSettings settings) {
+          WidgetBuilder builder;
+          builder = (context) => new ViewPortWidget(viewPorts: viewPorts, position: _counter);
+
+          return new MaterialPageRoute(builder: builder, settings: settings);
+        },
+      ),
+      );
+
     }else{
       return new Text("No data found");
     }
@@ -113,14 +144,20 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Widget getGroupWidget(Group g)
   {
+    return new Column(children: g.properties.map((item) => new PropertyWidget(initialState: item,)).toList());
+  }
+
+  Widget getOldGroupWidget(Group g)
+  {
     return new Column(children: g.properties.map((item) => getPropertyWidget(item)).toList());
   }
 
   Widget getPropertyWidget(Property p)
   {
     Widget value;
-    if(!p.editable) {
-      value = new TextField(decoration: new InputDecoration(),  );
+    if(p.editable) {
+      var propertyController = new TextEditingController();
+      value = new Container(child : new TextField(decoration: new InputDecoration(), controller: propertyController, ));
     }else{
       value =
           new Text(p.value, textScaleFactor: 2.0,);
@@ -154,34 +191,9 @@ class _MyHomePageState extends State<MyHomePage> {
       body: new Center(
         // Center is a layout widget. It takes a single child and positions it
         // in the middle of the parent.
-        child: new Column(
-          // Column is also layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug paint" (press "p" in the console where you ran
-          // "flutter run", or select "Toggle Debug Paint" from the Flutter tool
-          // window in IntelliJ) to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          crossAxisAlignment: CrossAxisAlignment.center,
-          //mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            new Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: <Widget>[
-                new FlatButton.icon(onPressed: _decrementCounter, icon: new Icon(Icons.arrow_back_ios), label: new Text("")),
-                new FlatButton.icon(onPressed: _incrementCounter, icon: new Icon(Icons.arrow_forward_ios), label: new Text("")),
-              ],
-            ),
-            getPage(viewPorts, _counter)
-          ],
+        child:getPage(context)
         ),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
-    );
+        );// This trailing comma makes auto-formatting nicer for build methods.
+
   }
 }
