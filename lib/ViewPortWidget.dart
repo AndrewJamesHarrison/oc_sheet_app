@@ -44,7 +44,7 @@ class _ViewPortWidgetState extends State<ViewPortWidget> {
           new FlatButton.icon(onPressed: () => Navigator.of(context).pop(), icon: new Icon(Icons.arrow_back_ios), label: new Text("")),
           new FlatButton.icon(onPressed: () => Navigator.of(context).push(new MaterialPageRoute(builder: (context) => new ViewPortWidget(viewPorts: _viewPorts, position: nextPosition,))), icon: new Icon(Icons.arrow_forward_ios), label: new Text("")),
         ]),
-    new Row(children: <Widget> [getViewWidget(_viewPortState)])
+    getViewWidget(_viewPortState)
     ],
     );
   }
@@ -54,12 +54,13 @@ class _ViewPortWidgetState extends State<ViewPortWidget> {
   Widget getViewWidget(ViewPort v)
     {
       return new Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: v.groups.map((item) => getGroupWidget(item)).toList()
       );
     }
 
     Widget getGroupWidget(Group g)
     {
-      return new Container(child: Column(children: g.properties.map((item) => new PropertyWidget(initialState: item,)).toList()));
+      return new Column(children: g.properties.map((item) => new PropertyWidget(initialState: item,)).toList());
     }

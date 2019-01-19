@@ -83,8 +83,14 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<File> get _localFile async {
+    //String contents = '[{"id":0,"name":"Main","groups":[{"name":"Basic Info","properties":[{"name":"Name","value":"Test Name","display":"String","editable":true},{"name":"Alias","value":"Test Alias","display":"String","editable":true},{"name":"Look","value":"Test Look","display":"String","editable":true},{"name":"Heritage","value":"Test Heritage","display":"String","editable":true},{"name":"Background","value":"Test Background","display":"String","editable":true},{"name":"Vice","value":"Test Vice","display":"String","editable":true}]}]}]';
     final path = await _localPath;
-    return File('$path/default.json');
+    File defaultFile = File('$path/default.json');
+    // bool exists = await defaultFile.exists();
+    // if(exists) {
+    //   defaultFile.writeAsString(contents);
+    // }
+    return defaultFile;
   }
 
   Future<String> readText() async {
@@ -104,8 +110,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   List<ViewPort> deSerializeJSON(String jsonBody) {
     List<ViewPort> result = new List<ViewPort>();
-    var x = json.decode(jsonBody) as Map<String, dynamic>;
-    var y = x["viewPorts"];
+    var y = json.decode(jsonBody) as List<dynamic>;
     for (var i = 0; i < y.length; i++) {
       var view = ViewPort.fromJson(y[i]);
       result.add(view);
@@ -135,7 +140,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Widget getViewWidget(ViewPort v) {
     return new Row(
-        mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: v.groups.map((item) => getGroupWidget(item)).toList());
     //return new Column(children:  <Widget>[new Row(children: <Widget>[new TextFormField()])]);
   }
@@ -169,7 +175,9 @@ class _MyHomePageState extends State<MyHomePage> {
         textScaleFactor: 2.0,
       );
     }
-    return new Row(children: <Widget>[
+    return new Row(mainAxisSize: MainAxisSize.max,
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: <Widget>[
       new Text(
         p.name,
         textScaleFactor: 2.0,

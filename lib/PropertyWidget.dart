@@ -51,6 +51,8 @@ class _PropertyWidgetState extends State<PropertyWidget> {
       new Text(_propertyState.value, textScaleFactor: 2.0,);
     }
     return new Row(
+      mainAxisSize: MainAxisSize.max,
+      mainAxisAlignment: MainAxisAlignment.start,
         children:
         <Widget>[
           new Text(_propertyState.name,
