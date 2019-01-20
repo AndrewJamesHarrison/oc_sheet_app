@@ -14,7 +14,6 @@ class _PropertyWidgetState extends State<PropertyWidget> {
   Property _propertyState;
   TextInputType inputType;
 
-
   @override
   void initState() {
     super.initState();
@@ -23,11 +22,13 @@ class _PropertyWidgetState extends State<PropertyWidget> {
     propertyController.addListener(_setProperty);
     propertyController.text = _propertyState.value;
     print(_propertyState.display);
-    switch(_propertyState.display){
-      case("Number"): inputType = TextInputType.number;
-      break;
-      case("String"): inputType = TextInputType.text;
-      break;
+    switch (_propertyState.display) {
+      case ("Number"):
+        inputType = TextInputType.number;
+        break;
+      case ("String"):
+        inputType = TextInputType.text;
+        break;
     }
   }
 
@@ -44,26 +45,35 @@ class _PropertyWidgetState extends State<PropertyWidget> {
   @override
   Widget build(BuildContext context) {
     Widget value;
-    if(_propertyState.editable) {
-      value = new Container(child: new TextField(decoration: new InputDecoration(), controller: propertyController, keyboardType: inputType,), width:100.00);
-    }else{
-      value =
-      new Text(_propertyState.value, textScaleFactor: 2.0,);
+    if (_propertyState.editable) {
+      value = new Container(
+          child: new TextField(
+            decoration: new InputDecoration(),
+            controller: propertyController,
+            keyboardType: inputType,
+            textDirection: TextDirection.ltr,
+          ),
+        width: 150,
+          );
+    } else {
+      value = new Text(
+        _propertyState.value,
+        textScaleFactor: 2.0,
+      );
     }
     return new Row(
-      mainAxisSize: MainAxisSize.max,
-      mainAxisAlignment: MainAxisAlignment.start,
-        children:
-        <Widget>[
-          new Text(_propertyState.name,
-            textScaleFactor: 2.0,
-          ),
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+            new Text(
+              _propertyState.name,
+              textScaleFactor: 1,
+            ),
           value
-        ]
-    );
+        ]);
   }
 
-  void _setProperty(){
+  void _setProperty() {
     setState(() {
       _propertyState.value = propertyController.text;
     });

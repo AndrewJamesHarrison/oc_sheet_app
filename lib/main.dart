@@ -121,8 +121,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget getPage(BuildContext context) {
     if (viewPorts.length > 0) {
       return new Container(
-        width: 600.00,
-        height: 800.0,
+          padding: EdgeInsets.all(7.5),
         child: new Navigator(
           onGenerateRoute: (RouteSettings settings) {
             WidgetBuilder builder;
@@ -147,7 +146,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Widget getGroupWidget(Group g) {
-    return new Column(
+    return new Column(crossAxisAlignment: CrossAxisAlignment.start,
         children: g.properties
             .map((item) => new PropertyWidget(
                   initialState: item,
@@ -156,7 +155,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Widget getOldGroupWidget(Group g) {
-    return new Column(
+    return new Column(crossAxisAlignment: CrossAxisAlignment.start,
         children: g.properties.map((item) => getPropertyWidget(item)).toList());
   }
 
