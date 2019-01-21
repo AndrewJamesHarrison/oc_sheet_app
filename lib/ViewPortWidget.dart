@@ -71,11 +71,19 @@ Widget getViewWidget(ViewPort v) {
 
 Widget getGroupWidget(Group g) {
   return Expanded(
-      child: new Column(
+      child: new Container(
+  decoration: const BoxDecoration(
+    border: Border(
+      top: BorderSide(width: 1.0, color: Color(0xFFFF000000)),
+      left: BorderSide(width: 1.0, color: Color(0xFFFF000000)),
+      right: BorderSide(width: 1.0, color: Color(0xFFFF000000)),
+      bottom: BorderSide(width: 1.0, color: Color(0xFFFF000000)),
+    ),
+  ), child: new Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: g.properties
               .map((item) => new PropertyWidget(
                     initialState: item,
                   ))
-              .toList()));
+              .toList())));
 }

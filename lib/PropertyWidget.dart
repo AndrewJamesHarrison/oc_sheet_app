@@ -53,7 +53,7 @@ class _PropertyWidgetState extends State<PropertyWidget> {
             keyboardType: inputType,
             textDirection: TextDirection.ltr,
           ),
-        width: 150,
+        width: (_propertyState.display == "String") ? 150 : 25,
           );
     } else {
       value = new Text(
