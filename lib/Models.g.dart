@@ -26,6 +26,9 @@ Group _$GroupFromJson(Map<String, dynamic> json) {
     ..name = json['name'] as String
     ..properties = (json['properties'] as List)
         .map((e) => Property.fromJson(e as Map<String, dynamic>))
+        .toList()
+    ..subGroups = (json['subGroups'] as List)
+        .map((e) => Group.fromJson(e as Map<String, dynamic>))
         .toList();
 }
 

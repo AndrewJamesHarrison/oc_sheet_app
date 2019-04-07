@@ -20,6 +20,7 @@ class Group
 {
   String name;
   List<Property> properties;
+  List<Group> subGroups;
 
   Group();
 
