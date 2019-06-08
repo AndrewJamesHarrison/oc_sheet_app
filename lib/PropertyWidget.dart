@@ -42,6 +42,20 @@ class _PropertyWidgetState extends State<PropertyWidget> {
     super.dispose();
   }
 
+  void _onTapTextField() {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return new TextField(
+            decoration: new InputDecoration(),
+            controller: propertyController,
+            keyboardType: inputType,
+            textDirection: TextDirection.ltr
+        );
+      }
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     Widget value;
@@ -52,6 +66,7 @@ class _PropertyWidgetState extends State<PropertyWidget> {
             controller: propertyController,
             keyboardType: inputType,
             textDirection: TextDirection.ltr,
+            onTap:() => _onTapTextField(),
           ),
         width: (_propertyState.display == "String") ? 150 : 25,
           );

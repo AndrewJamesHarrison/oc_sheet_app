@@ -36,14 +36,14 @@ class _ViewPortWidgetState extends State<ViewPortWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return new Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    return new ListView(
+      scrollDirection: Axis.vertical,
       children: <Widget>[
         new Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: <Widget>[
               new FlatButton.icon(
-                  onPressed: () => Navigator.of(context).pop(),
+                  onPressed: (currentPosition == 0) ? null : () => Navigator.of(context).pop(),
                   icon: new Icon(Icons.arrow_back_ios),
                   label: new Text("")),
               new FlatButton.icon(
