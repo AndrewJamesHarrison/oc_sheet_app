@@ -70,17 +70,17 @@ Widget getViewWidget(ViewPort v) {
 }
 
 Widget getGroupWidget(Group g) {
-  List<Widget> test = new List<Widget>();
-  if (g.properties != null) {
-    test.addAll(g.properties
-        .map((item) => new PropertyWidget(
-              initialState: item,
-            ))
-        .toList());
-  }
-  if (g.subGroups != null) {
-    test.addAll(g.subGroups.map((item) => getGroupWidgetTest(item)).toList());
-  }
+  // List<Widget> test = new List<Widget>();
+  // if (g.properties != null) {
+  //   test.addAll(g.properties
+  //       .map((item) => new PropertyWidget(
+  //             initialState: item,
+  //           ))
+  //       .toList());
+  // }
+  // if (g.subGroups != null) {
+  //   test.addAll(g.subGroups.map((item) => getGroupWidgetTest(item)).toList());
+  // }
   return new Card(child: getGroupWidgetTest(g));
   // return Expanded(
   //     flex: 1,

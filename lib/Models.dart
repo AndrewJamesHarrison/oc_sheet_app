@@ -21,6 +21,7 @@ class Group
   String name;
   List<Property> properties;
   List<Group> subGroups;
+  GroupLayout layout;
 
   Group();
 
@@ -40,4 +41,12 @@ class Property
 
   factory Property.fromJson(Map<String, dynamic> json) => _$PropertyFromJson(json);
   Map<String, dynamic> toJson() => _$PropertyToJson(this);
+}
+
+@JsonSerializable(nullable:false)
+class GroupLayout
+{
+  int columns;
+
+  GroupLayout();
 }
