@@ -1,4 +1,7 @@
+import 'dart:developer';
+
 import 'package:flutter/widgets.dart';
+import 'package:test_app/models/LayoutDirection.dart';
 import 'package:test_app/widgets/layoutContainerWidget/emptyStateContainer.dart';
 
 class LayoutContainer extends StatefulWidget {
@@ -9,39 +12,75 @@ class LayoutContainer extends StatefulWidget {
 }
 
 class LayoutContainerState extends State<LayoutContainer> {
-  addElement() {
+  LayoutDirection layoutDirection;
+  addElement(LayoutDirection direction) {
     setState(() {
-      if (childContainers.length < 2)
-        childContainers.insert(
-            0, Expanded(flex: 1, child: new LayoutContainer()));
+      layoutDirection = direction;
     });
   }
 
   removeElement() {
+    log('removing element with children: ', error: childContainers);
     setState(() {
-      childContainers.clear();
-      initChildContainers();
+      layoutDirection = LayoutDirection.none;
     });
   }
 
-  initChildContainers() {
-    childContainers.add(Expanded(
-        flex: 1,
-        child: EmptyStateContainer(
-          addAction: addElement,
-          removeAction: removeElement,
-        )));
-  }
-
-  List<Widget> childContainers = [];
+  List<Widget> childContainers = [
+    Expanded(flex: 1, child: new LayoutContainer()),
+    Expanded(flex: 1, child: new LayoutContainer())
+  ];
 
   @override
   Widget build(BuildContext context) {
-    if (childContainers.isEmpty) {
-      initChildContainers();
+    // if (layoutDirection == LayoutDirection.vertical) {
+    //   return Row(
+    //     children: childContainers,
+    //   );
+    // } else if (layoutDirection == LayoutDirection.horizontal)
+    //   return Column(
+    //     children: childContainers,
+    //   );
+    // else {
+    return gestureDetector(getChildWidget());
+  }
+
+  Widget gestureDetector(Widget childWidget) {
+    return Expanded(
+        flex: 1,
+        child: GestureDetector(
+            child: childWidget,
+            behavior: HitTestBehavior.opaque,
+            onHorizontalDragEnd: (val) =>
+                addElement(LayoutDirection.horizontal),
+            onVerticalDragEnd: (val) => addElement(LayoutDirection.vertical),
+            onLongPress: () => removeElement()));
+  }
+
+  Widget getChildWidget() {
+    switch (layoutDirection) {
+      case LayoutDirection.vertical:
+        return Row(
+          children: childContainers,
+        );
+        break;
+      case LayoutDirection.horizontal:
+        return Column(
+          children: childContainers,
+        );
+        break;
+      case LayoutDirection.none:
+        return Expanded(
+            flex: 1,
+            child: GestureDetector(
+                child: EmptyStateContainer(),
+                behavior: HitTestBehavior.opaque,
+                onHorizontalDragEnd: (val) =>
+                    addElement(LayoutDirection.horizontal),
+                onVerticalDragEnd: (val) =>
+                    addElement(LayoutDirection.vertical)));
+        break;
     }
-    return Column(
-      children: childContainers,
-    );
+    return gestureDetector(EmptyStateContainer());
   }
 }
