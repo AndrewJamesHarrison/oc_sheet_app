@@ -5,14 +5,19 @@ import 'package:test_app/models/LayoutDirection.dart';
 import 'package:test_app/widgets/layoutContainerWidget/emptyStateContainer.dart';
 
 class LayoutContainer extends StatefulWidget {
-  LayoutContainer({Key key}) : super(key: key);
+  final bool isParent;
+  LayoutContainer({Key key, this.isParent = true}) : super(key: key);
 
   @override
-  LayoutContainerState createState() => LayoutContainerState();
+  LayoutContainerState createState() => LayoutContainerState(this.isParent);
 }
 
 class LayoutContainerState extends State<LayoutContainer> {
+  LayoutContainerState(bool isParent) {
+    this.isParent = isParent;
+  }
   LayoutDirection layoutDirection;
+  bool isParent;
   addElement(LayoutDirection direction) {
     setState(() {
       layoutDirection = direction;
@@ -27,34 +32,47 @@ class LayoutContainerState extends State<LayoutContainer> {
   }
 
   List<Widget> childContainers = [
-    Expanded(flex: 1, child: new LayoutContainer()),
-    Expanded(flex: 1, child: new LayoutContainer())
+    Expanded(flex: 1, child: new LayoutContainer(isParent: false)),
+    Expanded(flex: 1, child: new LayoutContainer(isParent: false))
   ];
 
   @override
   Widget build(BuildContext context) {
-    // if (layoutDirection == LayoutDirection.vertical) {
-    //   return Row(
-    //     children: childContainers,
-    //   );
-    // } else if (layoutDirection == LayoutDirection.horizontal)
-    //   return Column(
-    //     children: childContainers,
-    //   );
-    // else {
-    return gestureDetector(getChildWidget());
+    if (layoutDirection == LayoutDirection.vertical) {
+      return Row(
+        children: childContainers,
+      );
+    } else if (layoutDirection == LayoutDirection.horizontal)
+      return Column(
+        children: childContainers,
+      );
+    else {
+      return gestureDetector(getChildWidget());
+    }
   }
 
   Widget gestureDetector(Widget childWidget) {
-    return Expanded(
-        flex: 1,
-        child: GestureDetector(
-            child: childWidget,
-            behavior: HitTestBehavior.opaque,
-            onHorizontalDragEnd: (val) =>
-                addElement(LayoutDirection.horizontal),
-            onVerticalDragEnd: (val) => addElement(LayoutDirection.vertical),
-            onLongPress: () => removeElement()));
+    if (isParent) {
+      return Expanded(
+          flex: 1,
+          child: GestureDetector(
+              child: childWidget,
+              behavior: HitTestBehavior.opaque,
+              onHorizontalDragEnd: (val) =>
+                  addElement(LayoutDirection.horizontal),
+              onVerticalDragEnd: (val) => addElement(LayoutDirection.vertical),
+              onLongPress: () => removeElement()));
+    } else {
+      return Expanded(
+          flex: 1,
+          child: GestureDetector(
+              child: childWidget,
+              behavior: HitTestBehavior.opaque,
+              onHorizontalDragEnd: (val) =>
+                  addElement(LayoutDirection.horizontal),
+              onVerticalDragEnd: (val) =>
+                  addElement(LayoutDirection.vertical)));
+    }
   }
 
   Widget getChildWidget() {
@@ -70,15 +88,17 @@ class LayoutContainerState extends State<LayoutContainer> {
         );
         break;
       case LayoutDirection.none:
-        return Expanded(
-            flex: 1,
-            child: GestureDetector(
-                child: EmptyStateContainer(),
-                behavior: HitTestBehavior.opaque,
-                onHorizontalDragEnd: (val) =>
-                    addElement(LayoutDirection.horizontal),
-                onVerticalDragEnd: (val) =>
-                    addElement(LayoutDirection.vertical)));
+        return Column(children: [
+          Expanded(
+              flex: 1,
+              child: GestureDetector(
+                  child: EmptyStateContainer(),
+                  behavior: HitTestBehavior.opaque,
+                  onHorizontalDragEnd: (val) =>
+                      addElement(LayoutDirection.horizontal),
+                  onVerticalDragEnd: (val) =>
+                      addElement(LayoutDirection.vertical)))
+        ]);
         break;
     }
     return gestureDetector(EmptyStateContainer());
